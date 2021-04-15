@@ -9,12 +9,35 @@
 /* Begin PBXBuildFile section */
 		7FA3E4F82628321900554287 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FA3E4F62628321900554287 /* Assets.xcassets */; };
 		7FA3E4F92628321900554287 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA3E4F72628321900554287 /* main.m */; };
+		7FE122D22628351200BA07E4 /* TryTrackerSupport.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */; };
+		7FE122D32628351200BA07E4 /* TryTracker.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122D12628351200BA07E4 /* TryTracker.c */; };
+		7FE122D726283F3600BA07E4 /* Quesa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE122D626283F3600BA07E4 /* Quesa.framework */; };
+		7FE122D826283F3600BA07E4 /* Quesa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE122D626283F3600BA07E4 /* Quesa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7FE122D926283F3600BA07E4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				7FE122D826283F3600BA07E4 /* Quesa.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		7FA3E4F52628321900554287 /* miniApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = miniApp.entitlements; sourceTree = "<group>"; };
 		7FA3E4F62628321900554287 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FA3E4F72628321900554287 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TryTrackerSupport.c; sourceTree = "<group>"; };
+		7FE122CF2628351200BA07E4 /* TryTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TryTracker.h; sourceTree = "<group>"; };
+		7FE122D02628351200BA07E4 /* TryTrackerSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TryTrackerSupport.h; sourceTree = "<group>"; };
+		7FE122D12628351200BA07E4 /* TryTracker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TryTracker.c; sourceTree = "<group>"; };
+		7FE122D626283F3600BA07E4 /* Quesa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quesa.framework; path = ../../../../Library/Frameworks/Quesa.framework; sourceTree = "<group>"; };
 		7FE31A0E253B58E300C21ACA /* TryTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TryTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -23,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FE122D726283F3600BA07E4 /* Quesa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,11 +63,32 @@
 			path = miniApp;
 			sourceTree = "<group>";
 		};
+		7FE122CD2628351200BA07E4 /* TryTracker */ = {
+			isa = PBXGroup;
+			children = (
+				7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */,
+				7FE122CF2628351200BA07E4 /* TryTracker.h */,
+				7FE122D02628351200BA07E4 /* TryTrackerSupport.h */,
+				7FE122D12628351200BA07E4 /* TryTracker.c */,
+			);
+			path = TryTracker;
+			sourceTree = "<group>";
+		};
+		7FE122D526283F3600BA07E4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7FE122D626283F3600BA07E4 /* Quesa.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7FE31A05253B58E300C21ACA = {
 			isa = PBXGroup;
 			children = (
+				7FE122CD2628351200BA07E4 /* TryTracker */,
 				7FA3E4F42628321900554287 /* miniApp */,
 				7FE31A0F253B58E300C21ACA /* Products */,
+				7FE122D526283F3600BA07E4 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,6 +110,7 @@
 				7FE31A0A253B58E300C21ACA /* Sources */,
 				7FE31A0B253B58E300C21ACA /* Frameworks */,
 				7FE31A0C253B58E300C21ACA /* Resources */,
+				7FE122D926283F3600BA07E4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -122,7 +168,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7FE122D22628351200BA07E4 /* TryTrackerSupport.c in Sources */,
 				7FA3E4F92628321900554287 /* main.m in Sources */,
+				7FE122D32628351200BA07E4 /* TryTracker.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,6 +297,10 @@
 				CODE_SIGN_ENTITLEMENTS = miniCocoaApp/miniCocoaApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -267,6 +319,10 @@
 				CODE_SIGN_ENTITLEMENTS = miniCocoaApp/miniCocoaApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Frameworks",
+				);
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

@@ -22,7 +22,12 @@ int main ()
     [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
     [window setTitle:appName];
     [window makeKeyAndOrderFront:nil];
+    /*TODO
+     - call InitDocumentData, passing also: id window
+     - setup event chain to react on called TrackerNotification
+     */
     [NSApp activateIgnoringOtherApps:YES];
     [NSApp run];
+    //ToDo: call DisposeDocumentData
     return 0;
 }
