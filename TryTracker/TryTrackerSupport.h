@@ -4,7 +4,7 @@
 //
 // Modification History:
 //
-//   4/20/2021      h-haris     de-carbonized
+//   4/20/2021      h-haris     de-carbonized, moved to objective-c compiler
 //	 5/11/95		dan v		modified for TryTracker
 //	12/27/94		nick		initial version
 
@@ -49,9 +49,9 @@
 OSErr					MyQD3DInitialize(void);
 OSErr					MyQD3DExit(void);
 
-TQ3ViewObject			MyNewView(WindowPtr theWindow);
-TQ3DrawContextObject	MyNewDrawContext(WindowPtr theWindow);
-TQ3CameraObject 		MyNewCamera(WindowPtr theWindow);
+TQ3ViewObject			MyNewView(id t_Window);
+TQ3DrawContextObject	MyNewDrawContext(id t_Window);
+TQ3CameraObject 		MyNewCamera(id t_Window);
 TQ3GroupObject			MyNewLights(void);
 TQ3GroupObject 			MyNewModel(void);
 

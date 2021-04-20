@@ -6,7 +6,7 @@
 //
 // Modification History:
 //
-//     04/2021      h-haris     de-carbonized and turned into cocoa app
+//   4/20/2021      h-haris     de-carbonized, moved to objective-c compiler
 //	12/07/2003		h-haris 	carbonized; changed to quesa headers; no polling but usage of notification
 //	 2/01/98		maarten 	added boxes for button states
 //	 5/11/95		dan v		modified for TryTracker
@@ -35,11 +35,9 @@ static void 		MainEventLoop( void ) ;
 // globals
 
 Boolean 		gQuitFlag 		= 0/*FALSE*/;
-/*
-WindowPtr		gMainWindow		= nil ;
- */
 DocumentRec		gDocument ;
 
+#if 0
 //-------------------------------------------------------------------------------------------
 // main()
 // entry point for the application, initialize the toolbox, initialize QuickDraw 3D
@@ -73,6 +71,7 @@ int carbon_main(int argc, char *argv[])
 	
 	return 0;
 }
+#endif
 
 //-------------------------------------------------------------------------------------------
 //
@@ -88,7 +87,7 @@ void InitDocumentData( DocumentPtr theDocument, id t_MainWindow )
 	
 	// sets up the 3d data for the scene
 	// Create view for QuickDraw 3D.
-    theDocument->fView = MyNewView( (WindowPtr)CFBridgingRetain(t_MainWindow) ) ;
+    theDocument->fView = MyNewView( t_MainWindow ) ;
 
     // the main display group:
 	theDocument->fModel = MyNewModel() ;
