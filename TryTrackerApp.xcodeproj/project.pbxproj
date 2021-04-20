@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		7FA3E4F82628321900554287 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FA3E4F62628321900554287 /* Assets.xcassets */; };
 		7FA3E4F92628321900554287 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA3E4F72628321900554287 /* main.m */; };
-		7FE122D22628351200BA07E4 /* TryTrackerSupport.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */; };
-		7FE122D32628351200BA07E4 /* TryTracker.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122D12628351200BA07E4 /* TryTracker.c */; };
+		7FE122D22628351200BA07E4 /* TryTrackerSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122CE2628351200BA07E4 /* TryTrackerSupport.m */; };
+		7FE122D32628351200BA07E4 /* TryTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE122D12628351200BA07E4 /* TryTracker.m */; };
 		7FE122D726283F3600BA07E4 /* Quesa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE122D626283F3600BA07E4 /* Quesa.framework */; };
 		7FE122D826283F3600BA07E4 /* Quesa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 7FE122D626283F3600BA07E4 /* Quesa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -30,13 +30,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7F32653F262EBD8E00E23E6C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7FA3E4F52628321900554287 /* miniApp.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = miniApp.entitlements; sourceTree = "<group>"; };
 		7FA3E4F62628321900554287 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FA3E4F72628321900554287 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TryTrackerSupport.c; sourceTree = "<group>"; };
+		7FE122CE2628351200BA07E4 /* TryTrackerSupport.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = TryTrackerSupport.m; sourceTree = "<group>"; };
 		7FE122CF2628351200BA07E4 /* TryTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TryTracker.h; sourceTree = "<group>"; };
 		7FE122D02628351200BA07E4 /* TryTrackerSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TryTrackerSupport.h; sourceTree = "<group>"; };
-		7FE122D12628351200BA07E4 /* TryTracker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TryTracker.c; sourceTree = "<group>"; };
+		7FE122D12628351200BA07E4 /* TryTracker.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; fileEncoding = 4; path = TryTracker.m; sourceTree = "<group>"; };
 		7FE122D626283F3600BA07E4 /* Quesa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quesa.framework; path = ../../../../Library/Frameworks/Quesa.framework; sourceTree = "<group>"; };
 		7FE31A0E253B58E300C21ACA /* TryTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TryTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -66,10 +67,10 @@
 		7FE122CD2628351200BA07E4 /* TryTracker */ = {
 			isa = PBXGroup;
 			children = (
-				7FE122CE2628351200BA07E4 /* TryTrackerSupport.c */,
-				7FE122CF2628351200BA07E4 /* TryTracker.h */,
 				7FE122D02628351200BA07E4 /* TryTrackerSupport.h */,
-				7FE122D12628351200BA07E4 /* TryTracker.c */,
+				7FE122CE2628351200BA07E4 /* TryTrackerSupport.m */,
+				7FE122CF2628351200BA07E4 /* TryTracker.h */,
+				7FE122D12628351200BA07E4 /* TryTracker.m */,
 			);
 			path = TryTracker;
 			sourceTree = "<group>";
@@ -78,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				7FE122D626283F3600BA07E4 /* Quesa.framework */,
+				7F32653F262EBD8E00E23E6C /* Cocoa.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -127,7 +129,7 @@
 		7FE31A06253B58E300C21ACA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					7FE31A0D253B58E300C21ACA = {
 						CreatedOnToolsVersion = 12.0.1;
@@ -168,9 +170,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7FE122D22628351200BA07E4 /* TryTrackerSupport.c in Sources */,
+				7FE122D22628351200BA07E4 /* TryTrackerSupport.m in Sources */,
 				7FA3E4F92628321900554287 /* main.m in Sources */,
-				7FE122D32628351200BA07E4 /* TryTracker.c in Sources */,
+				7FE122D32628351200BA07E4 /* TryTracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,7 +296,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = miniCocoaApp/miniCocoaApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = miniApp/miniApp.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -316,7 +319,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_ENTITLEMENTS = miniCocoaApp/miniCocoaApp.entitlements;
+				CODE_SIGN_ENTITLEMENTS = miniApp/miniApp.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (

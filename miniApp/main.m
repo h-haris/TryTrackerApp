@@ -1,9 +1,12 @@
 /* based on https://www.cocoawithlove.com/2010/09/minimalist-cocoa-programming.html */
 
 #import <Cocoa/Cocoa.h>
+#include "TryTracker.h"
 
 int main ()
 {
+    DocumentRec m_document; //all QD3D data structures
+    
     [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     id menubar = [NSMenu new];
@@ -22,12 +25,12 @@ int main ()
     [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
     [window setTitle:appName];
     [window makeKeyAndOrderFront:nil];
-    /*TODO
-     - call InitDocumentData, passing also: id window
-     - setup event chain to react on called TrackerNotification
-     */
+    //- call InitDocumentData, passing also: id window
+    InitDocumentData(&m_document, window);
+    
+    //TODO: setup event chain to react on called TrackerNotification
     [NSApp activateIgnoringOtherApps:YES];
     [NSApp run];
-    //ToDo: call DisposeDocumentData
+    //TODO: call DisposeDocumentData
     return 0;
 }

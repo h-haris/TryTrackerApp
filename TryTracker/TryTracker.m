@@ -15,58 +15,24 @@
 // c headers
 #include <string.h>
 
-//for Quesa
-#define QUESA_OS_MACINTOSH
-#define Q3_DEBUG
-
-#include <Quesa/Quesa.h>
-#include <Quesa/QuesaMath.h>
-#include <Quesa/QuesaDrawContext.h>
-#include <Quesa/QuesaShader.h>
-#include <Quesa/QuesaTransform.h>
-#include <Quesa/QuesaGroup.h>
-#include <Quesa/QuesaController.h>
-#include <Quesa/QuesaGeometry.h>
-
-
-#include "TryTracker.h"
 #include "TryTrackerSupport.h"
+#include "TryTracker.h"
 
 #define dolog
 //#undef dolog
 
 //-------------------------------------------------------------------------------------------
-
-struct _documentRecord {
-	TQ3ViewObject	fView ;					// the view for the scene
-	TQ3GroupObject	fModel ;				// object in the scene being modelled
-	TQ3StyleObject	fInterpolation ;		// interpolation style used when rendering
-	TQ3StyleObject	fBackFacing ;			// whether to draw shapes that face away from the camera
-	TQ3StyleObject	fFillStyle ;			// whether drawn as solid filled object or decomposed to components
-	TQ3AttributeSet	fHighlight;				// Added when a button is down
-	TQ3Point3D		fPosition;				// the position for the center of the model
-	TQ3Quaternion	fRotation;				// the rotation about the center of the model
-	unsigned long	fButtons;				// buttons state
-	TQ3BoxData		fButtonBoxes[16];		// use to show the button states
-	unsigned long	fPositionSN;			// serial number for tracker position data
-	unsigned long	fRotationSN;			// serial number for tracker rotation data
-	TQ3TrackerObject fTracker;				// the tracker
-};
-
-typedef struct _documentRecord DocumentRec, *DocumentPtr, **DocumentHdl ;
+// type definitions
 
 
 //-------------------------------------------------------------------------------------------
 // function prototypes
 
 static void 		MainEventLoop( void ) ;
-void InitDocumentData( DocumentPtr theDocument ) ;
-TQ3Status DocumentDraw3DData( DocumentPtr theDocument ) ;
-void DisposeDocumentData( DocumentPtr theDocument) ;
-TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef controllerRef);
+
 
 //-------------------------------------------------------------------------------------------
-//
+// globals
 
 Boolean 		gQuitFlag 		= 0/*FALSE*/;
 /*
@@ -92,7 +58,7 @@ int carbon_main(int argc, char *argv[])
         printf("Q3Initialize returned failure.\n");
 #endif
 
-	InitDocumentData( &gDocument ) ;
+	InitDocumentData( &gDocument, 0 ) ;
 	
 	MainEventLoop();
 	
@@ -111,7 +77,7 @@ int carbon_main(int argc, char *argv[])
 //-------------------------------------------------------------------------------------------
 //
 
-void InitDocumentData( DocumentPtr theDocument ) 
+void InitDocumentData( DocumentPtr theDocument, id t_MainWindow )
 {
 	TQ3ControllerRef	ControllerRef,nextControllerRef;
 	char				signature[256];
@@ -122,10 +88,9 @@ void InitDocumentData( DocumentPtr theDocument )
 	
 	// sets up the 3d data for the scene
 	// Create view for QuickDraw 3D.
-/*
-	theDocument->fView = MyNewView( (WindowPtr)gMainWindow ) ;
-*/
-	// the main display group:
+    theDocument->fView = MyNewView( (WindowPtr)CFBridgingRetain(t_MainWindow) ) ;
+
+    // the main display group:
 	theDocument->fModel = MyNewModel() ;
 
 	// the drawing styles:
@@ -164,7 +129,7 @@ void InitDocumentData( DocumentPtr theDocument )
 		do {
 	
 			/* Make sure that we aren't attaching to an ADB driver (QD3D 1.5 feature) */
-			Q3Controller_GetSignature(nextControllerRef, signature, strlen(appleADB)+1);
+			Q3Controller_GetSignature(nextControllerRef, signature, 1+(TQ3Uns32)strlen(appleADB));
 			if (strcmp (signature, appleADB) != 0)
 				Q3Controller_SetTracker(nextControllerRef, theDocument->fTracker);
 				
@@ -245,7 +210,7 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
 								&gDocument.fButtons);
 #ifdef dolog
 	if (gDocument.fButtons!=0)
-		printf("keys:%.4x\n",gDocument.fButtons);
+        printf("keys:%.4x\n",gDocument.fButtons);
 #endif										
 	Q3Tracker_GetPosition(		gDocument.fTracker,
 								&gDocument.fPosition,
@@ -269,7 +234,7 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
 					
 	if (rotationChanged) {
 #ifdef dolog
-		printf("||SN:%.4x rot: %.3f %.3f %.3f %.3f\n",gDocument.fRotationSN,rotation.w,rotation.x,rotation.y,rotation.z);
+        printf("||SN:%.4x rot: %.3f %.3f %.3f %.3f\n",gDocument.fRotationSN, rotation.w, rotation.x, rotation.y, rotation.z);
 #endif
 		Q3Quaternion_Invert(&lastRotation, &deltaRotation);
 		Q3Quaternion_Multiply(&deltaRotation, &rotation, &deltaRotation);
@@ -280,7 +245,7 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
 	
 #ifdef dolog
 	if (positionChanged)
-		printf("||SN:%.4x trans:%.3f %.3f %.3f\n",gDocument.fPositionSN,gDocument.fPosition.x, gDocument.fPosition.y, gDocument.fPosition.z);
+        printf("||SN:%%.4xtrans:%.3u %.3f %.3f %.3f\n",gDocument.fPositionSN, gDocument.fPosition.x, gDocument.fPosition.y, gDocument.fPosition.z);
 #endif
 							
 	if (positionChanged || rotationChanged) {
@@ -290,6 +255,7 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
 		InvalWindowRect( gMainWindow,&updateRect);
 #endif
 	}
+    return kQ3Success ;
 };
 
 //-------------------------------------------------------------------------------------------
