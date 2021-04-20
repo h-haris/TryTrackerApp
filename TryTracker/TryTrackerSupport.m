@@ -6,52 +6,12 @@
 //
 // Modification History:
 //
-//	12/07/2003		o.h.		carbonized; changed to quesa headers
+//   4/20/2021      h-haris     de-carbonized
+//	12/07/2003		h-haris		carbonized; changed to quesa headers
 //	 5/11/95		dan v		modified for TryTracker
 //	12/27/94		nick		initial version
 
-/*
-#include <QuickDraw.h>
-#include <QDOffScreen.h>
-//included through prefix
-*/
-
 #include "TryTrackerSupport.h"
-
-//for QD3D
-/*
-#include "QD3DDrawContext.h"
-#include "QD3DRenderer.h"
-#include "QD3DShader.h"
-#include "QD3DCamera.h"
-#include "QD3DLight.h"
-#include "QD3DGeometry.h"
-#include "QD3DGroup.h"
-#include "QD3DMath.h"
-#include "QD3DSet.h"
-#include "QD3DTransform.h"
-#include "QD3DAcceleration.h"
-*/
-//for Quesa
-#ifndef QUESA_OS_MACINTOSH
-#define QUESA_OS_MACINTOSH
-#endif
-
-#ifndef Q3_DEBUG
-#define Q3_DEBUG
-#endif
-
-#include <Quesa/QuesaDrawContext.h>
-#include <Quesa/QuesaRenderer.h>
-#include <Quesa/QuesaShader.h>
-#include <Quesa/QuesaCamera.h>
-#include <Quesa/QuesaLight.h>
-#include <Quesa/QuesaGeometry.h>
-#include <Quesa/QuesaGroup.h>
-#include <Quesa/QuesaMath.h>
-#include <Quesa/QuesaSet.h>
-#include <Quesa/QuesaTransform.h>
-//#include <Quesa/QuesaAcceleration.h>
 
 static 	TQ3Point3D	documentGroupCenter;
 static	float		documentGroupScale;
@@ -78,16 +38,11 @@ TQ3ViewObject MyNewView(WindowPtr theWindow)
 	Q3Object_Dispose( myDrawContext ) ;
 	
 	//	Create and set renderer.
-	
-	
-	
 #if 0
 	// this would use the Wireframe renderer
 
 	myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeWireFrame);
-	
 #else
-
 	// this would use the interactive software renderer
 
 	if ((myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeInteractive)) != nil ) {
@@ -187,9 +142,6 @@ TQ3CameraObject MyNewCamera(WindowPtr theWindow)
 	float 						hither 		= 0.001;
 	float 						yon 		= 1000.0;
 	
-	TQ3Status					returnVal = kQ3Failure ;
-
-
 	perspectiveData.cameraData.placement.cameraLocation 	= from;
 	perspectiveData.cameraData.placement.pointOfInterest 	= to;
 	perspectiveData.cameraData.placement.upVector 			= up;
@@ -223,7 +175,7 @@ TQ3CameraObject MyNewCamera(WindowPtr theWindow)
 
 //----------------------------------------------------------------------------------
 
-TQ3GroupObject MyNewLights()
+TQ3GroupObject MyNewLights(void)
 {
 	TQ3GroupPosition		myGroupPosition;
 	TQ3GroupObject			myLightList;
