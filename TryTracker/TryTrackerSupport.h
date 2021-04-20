@@ -49,9 +49,9 @@
 OSErr					MyQD3DInitialize(void);
 OSErr					MyQD3DExit(void);
 
-TQ3ViewObject			MyNewView(id t_Window);
-TQ3DrawContextObject	MyNewDrawContext(id t_Window);
-TQ3CameraObject 		MyNewCamera(id t_Window);
+TQ3ViewObject			MyNewView(NSView * t_View);
+TQ3DrawContextObject	MyNewDrawContext(NSView * t_View);
+TQ3CameraObject 		MyNewCamera(NSView * t_View);
 TQ3GroupObject			MyNewLights(void);
 TQ3GroupObject 			MyNewModel(void);
 

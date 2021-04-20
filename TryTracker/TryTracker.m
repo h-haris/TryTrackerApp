@@ -76,7 +76,20 @@ int carbon_main(int argc, char *argv[])
 //-------------------------------------------------------------------------------------------
 //
 
-void InitDocumentData( DocumentPtr theDocument, id t_MainWindow )
+void InitQD3D(void)
+{
+    TQ3Status    myStatus;
+
+    //    Initialize QuickDraw 3D, open a connection to the QuickDraw 3D library
+    myStatus = Q3Initialize();
+
+    #ifdef dolog
+    if ( myStatus == kQ3Failure )
+        printf("Q3Initialize returned failure.\n");
+    #endif
+}
+    
+void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
 {
 	TQ3ControllerRef	ControllerRef,nextControllerRef;
 	char				signature[256];
@@ -87,7 +100,7 @@ void InitDocumentData( DocumentPtr theDocument, id t_MainWindow )
 	
 	// sets up the 3d data for the scene
 	// Create view for QuickDraw 3D.
-    theDocument->fView = MyNewView( t_MainWindow ) ;
+    theDocument->fView = MyNewView( t_View ) ;
 
     // the main display group:
 	theDocument->fModel = MyNewModel() ;
