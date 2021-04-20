@@ -2,7 +2,7 @@
 //
 // Nick Thompson - January 6th 1994
 // 
-// ©1994-95 Apple computer Inc., All Rights Reserved
+// 1994-95 Apple computer Inc., All Rights Reserved
 //
 // Modification History:
 //
@@ -13,11 +13,7 @@
 
 #include "TryTrackerSupport.h"
 
-static 	TQ3Point3D	documentGroupCenter;
-static	float		documentGroupScale;
-
-
-TQ3ViewObject MyNewView(id t_Window)
+TQ3ViewObject MyNewView(NSView * t_View)
 {
 	TQ3Status				myStatus;
 	TQ3ViewObject			myView;
@@ -25,45 +21,22 @@ TQ3ViewObject MyNewView(id t_Window)
 	TQ3RendererObject		myRenderer;
 	TQ3CameraObject			myCamera;
 	TQ3GroupObject			myLights;
-	
-#if 0
-    myView = Q3View_New();
-    
+
+    if ((myView = Q3View_New()) == nil )
+        goto bail;
+
     //    Create and set draw context.
-    if ((myDrawContext = MyNewDrawContext(t_Window)) == nil )
-        goto bail;
-        
-    if ((myStatus = Q3View_SetDrawContext(myView, myDrawContext)) == kQ3Failure )
+    if ((myDrawContext = MyNewDrawContext(t_View)) == nil )
         goto bail;
 
-#else
-    TQ3ColorARGB            ClearColor;
-    TQ3DrawContextData      myDrawContextData;
-    
-    myView = Q3View_NewWithDefaults(kQ3DrawContextTypeCocoa, (__bridge void * _Nonnull)([(NSWindow*)t_Window contentView]));//TODO: OK?
-    
-    //    Set the background color.
-    ClearColor.a = 1.0;
-    ClearColor.r = 0.35;
-    ClearColor.g = 0.35;
-    ClearColor.b = 0.35;
-
-    //    Fill in draw context data.
-    if ((myStatus = Q3View_GetDrawContext(myView, &myDrawContext)) == kQ3Failure )
-        goto bail;
-
-    if ((myStatus = Q3DrawContext_GetData(myDrawContext, &myDrawContextData)) == kQ3Failure )
-        goto bail;
-
-    myDrawContextData.clearImageMethod = kQ3ClearMethodWithColor;
-    myDrawContextData.clearImageColor = ClearColor;
-    myDrawContextData.paneState = kQ3False;
-    myDrawContextData.maskState = kQ3False;
-    myDrawContextData.doubleBufferState = kQ3True;
-
-    if ((myStatus = Q3DrawContext_SetData(myDrawContext, &myDrawContextData)) == kQ3Failure )
+#if 0
+    void * _Nonnull         drawContextTarget_NSView = (__bridge void * _Nonnull)(t_View);
+    if ((myStatus = Q3CocoaDrawContext_SetNSView(myView, drawContextTarget_NSView)) == kQ3Failure )
         goto bail;
 #endif
+    
+    if ((myStatus = Q3View_SetDrawContext(myView, myDrawContext)) == kQ3Failure )
+        goto bail;
 
     Q3Object_Dispose( myDrawContext ) ;
 
@@ -91,7 +64,7 @@ TQ3ViewObject MyNewView(id t_Window)
 	Q3Object_Dispose( myRenderer ) ;
 	
 	//	Create and set camera.
-	if ( (myCamera = MyNewCamera(t_Window)) == nil )
+	if ( (myCamera = MyNewCamera(t_View)) == nil )
 		goto bail;
 		
 	if ((myStatus = Q3View_SetCamera(myView, myCamera)) == kQ3Failure )
@@ -118,11 +91,11 @@ bail:
 
 //----------------------------------------------------------------------------------
 
-#if 0
-TQ3DrawContextObject MyNewDrawContext(id t_Window)
+#if 1
+TQ3DrawContextObject MyNewDrawContext(NSView * t_View)
 {
 	TQ3DrawContextData		myDrawContextData;
-	TQ3MacDrawContextData	myMacDrawContextData;
+    TQ3CocoaDrawContextData	myCocoaDrawContextData;
 	TQ3ColorARGB			ClearColor;
 	TQ3DrawContextObject	myDrawContext ;
 	
@@ -138,24 +111,21 @@ TQ3DrawContextObject MyNewDrawContext(id t_Window)
 	myDrawContextData.paneState = kQ3False;
 	myDrawContextData.maskState = kQ3False;
 	myDrawContextData.doubleBufferState = kQ3True;
+    
+    
  
-	myMacDrawContextData.drawContextData = myDrawContextData;
-	
-	myMacDrawContextData.window = (CGrafPtr) theWindow;		// this is the window associated with the view
-	myMacDrawContextData.library = kQ3Mac2DLibraryNone;
-	myMacDrawContextData.viewPort = nil;
-	myMacDrawContextData.grafPort = nil;
-	
-	//	Create draw context and return it, if itÕs nil the caller must handle
-	myDrawContext = Q3MacDrawContext_New(&myMacDrawContextData) ;
+    myCocoaDrawContextData.drawContextData = myDrawContextData;
+    myCocoaDrawContextData.nsView = (__bridge void * _Nonnull)(t_View);
+    
+    myDrawContext = Q3CocoaDrawContext_New(&myCocoaDrawContextData);
 
-	return myDrawContext ;
+    return myDrawContext ;
 }
 #endif
 
 //----------------------------------------------------------------------------------
 
-TQ3CameraObject MyNewCamera(id t_Window)
+TQ3CameraObject MyNewCamera(NSView * t_View)
 {
 	TQ3ViewAngleAspectCameraData	perspectiveData;
 	TQ3CameraObject				camera;
@@ -181,13 +151,8 @@ TQ3CameraObject MyNewCamera(id t_Window)
 	perspectiveData.cameraData.viewPort.height = 2.0;
 	
 	perspectiveData.fov = fieldOfView;
-	
-	/*
-	perspectiveData.aspectRatioXToY	=
-		(float) (theWindow->portRect.right - theWindow->portRect.left) / 
-		(float) (theWindow->portRect.bottom - theWindow->portRect.top);
-	*/
-    NSRect portRect = [[(NSWindow*)t_Window contentView] bounds];
+
+    NSRect portRect = [t_View bounds];
 
 	perspectiveData.aspectRatioXToY	=
 		(float) (portRect.size.width) / (float) (portRect.size.height);

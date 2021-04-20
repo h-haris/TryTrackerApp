@@ -42,7 +42,8 @@ typedef struct _documentRecord DocumentRec, *DocumentPtr, **DocumentHdl ;
 
 //-------------------------------------------------------------------------------------------
 //
-void InitDocumentData( DocumentPtr theDocument, id t_MainWindow );
+void InitQD3D(void);
+void InitDocumentData( DocumentPtr theDocument, NSView * t_View );
 TQ3Status DocumentDraw3DData( DocumentPtr theDocument ) ;
 void DisposeDocumentData( DocumentPtr theDocument) ;
 TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef controllerRef);

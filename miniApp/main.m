@@ -25,8 +25,9 @@ int main ()
     [window cascadeTopLeftFromPoint:NSMakePoint(20,20)];
     [window setTitle:appName];
     [window makeKeyAndOrderFront:nil];
+    InitQD3D();
     //- call InitDocumentData, passing also: id window
-    InitDocumentData(&m_document, window);
+    InitDocumentData(&m_document,[window contentView]);
     
     //TODO: setup event chain to react on called TrackerNotification
     [NSApp activateIgnoringOtherApps:YES];
