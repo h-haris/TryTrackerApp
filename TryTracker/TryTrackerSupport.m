@@ -6,7 +6,7 @@
 //
 // Modification History:
 //
-//   4/20/2021      h-haris     de-carbonized
+//   4/20/2021      h-haris     de-carbonized, moved to objective-c compiler
 //	12/07/2003		h-haris		carbonized; changed to quesa headers
 //	 5/11/95		dan v		modified for TryTracker
 //	12/27/94		nick		initial version
@@ -17,7 +17,7 @@ static 	TQ3Point3D	documentGroupCenter;
 static	float		documentGroupScale;
 
 
-TQ3ViewObject MyNewView(WindowPtr theWindow)
+TQ3ViewObject MyNewView(id t_Window)
 {
 	TQ3Status				myStatus;
 	TQ3ViewObject			myView;
@@ -29,7 +29,7 @@ TQ3ViewObject MyNewView(WindowPtr theWindow)
 	myView = Q3View_New();
 	
 	//	Create and set draw context.
-	if ((myDrawContext = MyNewDrawContext(theWindow)) == nil )
+    if ((myDrawContext = MyNewDrawContext(t_Window)) == nil )
 		goto bail;
 		
 	if ((myStatus = Q3View_SetDrawContext(myView, myDrawContext)) == kQ3Failure )
@@ -67,7 +67,7 @@ TQ3ViewObject MyNewView(WindowPtr theWindow)
 	Q3Object_Dispose( myRenderer ) ;
 	
 	//	Create and set camera.
-	if ( (myCamera = MyNewCamera(theWindow)) == nil )
+	if ( (myCamera = MyNewCamera(t_Window)) == nil )
 		goto bail;
 		
 	if ((myStatus = Q3View_SetCamera(myView, myCamera)) == kQ3Failure )
@@ -94,7 +94,7 @@ bail:
 
 //----------------------------------------------------------------------------------
 
-TQ3DrawContextObject MyNewDrawContext(WindowPtr theWindow)
+TQ3DrawContextObject MyNewDrawContext(id t_Window)
 {
 	TQ3DrawContextData		myDrawContextData;
 	TQ3MacDrawContextData	myMacDrawContextData;
@@ -129,7 +129,7 @@ TQ3DrawContextObject MyNewDrawContext(WindowPtr theWindow)
 
 //----------------------------------------------------------------------------------
 
-TQ3CameraObject MyNewCamera(WindowPtr theWindow)
+TQ3CameraObject MyNewCamera(id t_Window)
 {
 	TQ3ViewAngleAspectCameraData	perspectiveData;
 	TQ3CameraObject				camera;
@@ -154,18 +154,17 @@ TQ3CameraObject MyNewCamera(WindowPtr theWindow)
 	perspectiveData.cameraData.viewPort.width = 2.0;
 	perspectiveData.cameraData.viewPort.height = 2.0;
 	
-	perspectiveData.fov				= fieldOfView;
+	perspectiveData.fov = fieldOfView;
 	
 	/*
 	perspectiveData.aspectRatioXToY	=
 		(float) (theWindow->portRect.right - theWindow->portRect.left) / 
 		(float) (theWindow->portRect.bottom - theWindow->portRect.top);
 	*/
-	Rect portRect;
-	GetPortBounds(GetWindowPort(theWindow),&portRect);
+    NSRect portRect = [[(NSWindow*)t_Window contentView] bounds];
+
 	perspectiveData.aspectRatioXToY	=
-		(float) (portRect.right - portRect.left) / 
-		(float) (portRect.bottom - portRect.top);
+		(float) (portRect.size.width) / (float) (portRect.size.height);
 		
 	camera = Q3ViewAngleAspectCamera_New(&perspectiveData);
 
