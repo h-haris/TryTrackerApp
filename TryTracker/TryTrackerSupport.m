@@ -26,23 +26,48 @@ TQ3ViewObject MyNewView(id t_Window)
 	TQ3CameraObject			myCamera;
 	TQ3GroupObject			myLights;
 	
-	myView = Q3View_New();
-	
-	//	Create and set draw context.
-    if ((myDrawContext = MyNewDrawContext(t_Window)) == nil )
-		goto bail;
-		
-	if ((myStatus = Q3View_SetDrawContext(myView, myDrawContext)) == kQ3Failure )
-		goto bail;
-
-	Q3Object_Dispose( myDrawContext ) ;
-	
-	//	Create and set renderer.
 #if 0
-	// this would use the Wireframe renderer
+    myView = Q3View_New();
+    
+    //    Create and set draw context.
+    if ((myDrawContext = MyNewDrawContext(t_Window)) == nil )
+        goto bail;
+        
+    if ((myStatus = Q3View_SetDrawContext(myView, myDrawContext)) == kQ3Failure )
+        goto bail;
 
-	myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeWireFrame);
 #else
+    TQ3ColorARGB            ClearColor;
+    TQ3DrawContextData      myDrawContextData;
+    
+    myView = Q3View_NewWithDefaults(kQ3DrawContextTypeCocoa, (__bridge void * _Nonnull)([(NSWindow*)t_Window contentView]));//TODO: OK?
+    
+    //    Set the background color.
+    ClearColor.a = 1.0;
+    ClearColor.r = 0.35;
+    ClearColor.g = 0.35;
+    ClearColor.b = 0.35;
+
+    //    Fill in draw context data.
+    if ((myStatus = Q3View_GetDrawContext(myView, &myDrawContext)) == kQ3Failure )
+        goto bail;
+
+    if ((myStatus = Q3DrawContext_GetData(myDrawContext, &myDrawContextData)) == kQ3Failure )
+        goto bail;
+
+    myDrawContextData.clearImageMethod = kQ3ClearMethodWithColor;
+    myDrawContextData.clearImageColor = ClearColor;
+    myDrawContextData.paneState = kQ3False;
+    myDrawContextData.maskState = kQ3False;
+    myDrawContextData.doubleBufferState = kQ3True;
+
+    if ((myStatus = Q3DrawContext_SetData(myDrawContext, &myDrawContextData)) == kQ3Failure )
+        goto bail;
+#endif
+
+    Q3Object_Dispose( myDrawContext ) ;
+
+	//	Create and set renderer.
 	// this would use the interactive software renderer
 
 	if ((myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeInteractive)) != nil ) {
@@ -58,7 +83,6 @@ TQ3ViewObject MyNewView(id t_Window)
 	else {
 		goto bail;
 	}
-#endif
 
 	if ((myStatus = Q3View_SetRenderer(myView, myRenderer)) == kQ3Failure ) {
 		goto bail;
@@ -94,6 +118,7 @@ bail:
 
 //----------------------------------------------------------------------------------
 
+#if 0
 TQ3DrawContextObject MyNewDrawContext(id t_Window)
 {
 	TQ3DrawContextData		myDrawContextData;
@@ -126,6 +151,7 @@ TQ3DrawContextObject MyNewDrawContext(id t_Window)
 
 	return myDrawContext ;
 }
+#endif
 
 //----------------------------------------------------------------------------------
 
