@@ -37,42 +37,6 @@ static void 		MainEventLoop( void ) ;
 Boolean 		gQuitFlag 		= 0/*FALSE*/;
 DocumentRec		gDocument ;
 
-#if 0
-//-------------------------------------------------------------------------------------------
-// main()
-// entry point for the application, initialize the toolbox, initialize QuickDraw 3D
-// and enter the main event loop.  On exit from the main event loop, we want to call
-// the QuickDraw 3D exit function to clean up QuickDraw 3d.
-
-int carbon_main(int argc, char *argv[])
-{
-	TQ3Status	myStatus;
-	
-	//	Initialize QuickDraw 3D, open a connection to the QuickDraw 3D library
-	myStatus = Q3Initialize();
-
-#ifdef dolog
-    if ( myStatus == kQ3Failure )
-        printf("Q3Initialize returned failure.\n");
-#endif
-
-	InitDocumentData( &gDocument, 0 ) ;
-	
-	MainEventLoop();
-	
-	DisposeDocumentData( &gDocument ) ;
-	
-	//	Close our connection to the QuickDraw 3D library
-	myStatus = Q3Exit();
-#ifdef dolog
-    if ( myStatus == kQ3Failure )
-        printf("Q3Exit returned failure.\n");
-#endif
-	
-	return 0;
-}
-#endif
-
 //-------------------------------------------------------------------------------------------
 //
 
@@ -301,3 +265,33 @@ void MainEventLoop()
 	}
 #endif
 }
+
+#if 0
+//-------------------------------------------------------------------------------------------
+// main()
+// entry point for the application, initialize the toolbox, initialize QuickDraw 3D
+// and enter the main event loop.  On exit from the main event loop, we want to call
+// the QuickDraw 3D exit function to clean up QuickDraw 3d.
+
+int carbon_main(int argc, char *argv[])
+{
+    TQ3Status    myStatus;
+
+    InitQD3D();
+
+    InitDocumentData( &gDocument, 0 ) ;
+    
+    MainEventLoop();
+    
+    DisposeDocumentData( &gDocument ) ;
+    
+    //    Close our connection to the QuickDraw 3D library
+    myStatus = Q3Exit();
+#ifdef dolog
+    if ( myStatus == kQ3Failure )
+        printf("Q3Exit returned failure.\n");
+#endif
+    
+    return 0;
+}
+#endif
