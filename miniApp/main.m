@@ -34,6 +34,8 @@ int main ()
     //TODO: setup event chain to react on called TrackerNotification
     [NSApp activateIgnoringOtherApps:YES];
     [NSApp run];
-    //TODO: call DisposeDocumentData
+    
+    DisposeDocumentData(&m_document);
+    ExitQD3D();
     return 0;
 }

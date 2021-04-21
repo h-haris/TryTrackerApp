@@ -35,7 +35,7 @@ static void 		MainEventLoop( void ) ;
 // globals
 
 Boolean 		gQuitFlag 		= 0/*FALSE*/;
-DocumentRec		gDocument ;
+DocumentPtr		gDocument ;
 
 //-------------------------------------------------------------------------------------------
 //
@@ -52,7 +52,19 @@ void InitQD3D(void)
         printf("Q3Initialize returned failure.\n");
     #endif
 }
-    
+
+void ExitQD3D(void)
+{
+    TQ3Status    myStatus;
+
+    //    Close our connection to the QuickDraw 3D library
+    myStatus = Q3Exit();
+    #ifdef dolog
+    if ( myStatus == kQ3Failure )
+        printf("Q3Exit returned failure.\n");
+    #endif
+}
+
 void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
 {
 	TQ3ControllerRef	ControllerRef,nextControllerRef;
@@ -62,6 +74,9 @@ void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
 	TQ3Switch			mySwitch = kQ3On;
 	int 				i;
 	
+    //set the global reference:
+    gDocument = theDocument;
+    
 	// sets up the 3d data for the scene
 	// Create view for QuickDraw 3D.
     theDocument->fView = MyNewView( t_View ) ;
@@ -177,60 +192,68 @@ TQ3Status DocumentDraw3DData( DocumentPtr theDocument )
 
 TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef controllerRef)
 {
-	TQ3Boolean			positionChanged;
-	TQ3Boolean			rotationChanged;
-	TQ3Quaternion		rotation, deltaRotation;
+    TQ3Point3D          position;/*gDocument.fPosition*/
+    TQ3Boolean			positionChanged;
+    TQ3Uns32            positionSN;/*gDocument.fPositionSN*/ // serial number for tracker position data
+    
+    TQ3Quaternion       rotation;/*gDocument.fRotation*/
+    TQ3Quaternion       deltaRotation;
+    TQ3Boolean			rotationChanged;
+    TQ3Uns32            rotationSN;/*gDocument.fRotationSN*/ // serial number for tracker rotation data
+
+    TQ3Uns32            buttons; /*gDocument.fButtons*/
+    
 	static TQ3Quaternion	lastRotation = {1, 0, 0, 0};
 	
-	Q3Tracker_GetButtons(		gDocument.fTracker,
-								&gDocument.fButtons);
+	Q3Tracker_GetButtons(trackerObject, &buttons );
 #ifdef dolog
-	if (gDocument.fButtons!=0)
-        printf("keys:%.4x\n",gDocument.fButtons);
-#endif										
-	Q3Tracker_GetPosition(		gDocument.fTracker,
-								&gDocument.fPosition,
+	if (buttons!=0)
+        printf("keys:%.4x\n",buttons);
+#endif
+    
+	Q3Tracker_GetPosition(		trackerObject,
+								&position,
 								NULL,
 								&positionChanged,
-								&gDocument.fPositionSN);
-	
+								&positionSN);
+#ifdef dolog
+    if (positionChanged)
+        printf("||SN:%%.4xtrans:%.3u %.3f %.3f %.3f\n",positionSN, position.x, position.y, position.z);
+#endif
+    
 	/* Strange: When the delta parameter is non-NULL QD3D will set the absolute rotation
 		* value to 1, 0, 0, 0
 		*/
-	Q3Tracker_GetOrientation(	gDocument.fTracker,
+	Q3Tracker_GetOrientation(	trackerObject,
 								&rotation,
 								NULL,
-//										gDocument.fRotation,
-//										NULL,
 								&rotationChanged,
-								&gDocument.fRotationSN);
-	/* Added to check the relative rotation procedure, calculated because of remark
-		* above
-		*/
-					
-	if (rotationChanged) {
+								&rotationSN);
+    if (rotationChanged)
 #ifdef dolog
-        printf("||SN:%.4x rot: %.3f %.3f %.3f %.3f\n",gDocument.fRotationSN, rotation.w, rotation.x, rotation.y, rotation.z);
+        printf("||SN:%.4x rot: %.3f %.3f %.3f %.3f\n",rotationSN, rotation.w, rotation.x, rotation.y, rotation.z);
 #endif
+
+#if 0
+    if (rotationChanged) {
 		Q3Quaternion_Invert(&lastRotation, &deltaRotation);
 		Q3Quaternion_Multiply(&deltaRotation, &rotation, &deltaRotation);
 		Q3Quaternion_Normalize(&deltaRotation, &deltaRotation);
-		Q3Quaternion_Multiply(&gDocument.fRotation, &deltaRotation, &gDocument.fRotation);
+		Q3Quaternion_Multiply(&rotation, &deltaRotation, &rotation);
 		lastRotation = rotation;
 	}
-	
-#ifdef dolog
-	if (positionChanged)
-        printf("||SN:%%.4xtrans:%.3u %.3f %.3f %.3f\n",gDocument.fPositionSN, gDocument.fPosition.x, gDocument.fPosition.y, gDocument.fPosition.z);
 #endif
-							
-	if (positionChanged || rotationChanged) {
-#if 0
-		SetPort(GetWindowPort(gMainWindow));
-		GetWindowBounds(gMainWindow,kWindowContentRgn,&updateRect);
-		InvalWindowRect( gMainWindow,&updateRect);
-#endif
-	}
+
+    //copy to global:
+    gDocument->fPosition    = position;
+    gDocument->fPositionSN  = positionSN;
+    gDocument->fRotation    = rotation;
+    gDocument->fRotationSN  = rotationSN;
+    gDocument->fButtons     = buttons;
+    
+    //TODO: (either send an event as delegate or call DocumentDraw3DData directly)
+    DocumentDraw3DData(gDocument);
+    
     return kQ3Success ;
 };
 
@@ -275,8 +298,6 @@ void MainEventLoop()
 
 int carbon_main(int argc, char *argv[])
 {
-    TQ3Status    myStatus;
-
     InitQD3D();
 
     InitDocumentData( &gDocument, 0 ) ;
@@ -285,12 +306,7 @@ int carbon_main(int argc, char *argv[])
     
     DisposeDocumentData( &gDocument ) ;
     
-    //    Close our connection to the QuickDraw 3D library
-    myStatus = Q3Exit();
-#ifdef dolog
-    if ( myStatus == kQ3Failure )
-        printf("Q3Exit returned failure.\n");
-#endif
+    ExitQD3D();
     
     return 0;
 }
