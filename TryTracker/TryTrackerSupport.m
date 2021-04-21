@@ -43,7 +43,7 @@ TQ3ViewObject MyNewView(NSView * t_View)
 	//	Create and set renderer.
 	// this would use the interactive software renderer
 
-	if ((myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeInteractive)) != nil ) {
+	if ((myRenderer = Q3Renderer_NewFromType(kQ3RendererTypeOpenGL /*kQ3RendererTypeInteractive*/)) != nil ) {
 		if ((myStatus = Q3View_SetRenderer(myView, myRenderer)) == kQ3Failure ) {
 			goto bail;
 		}
@@ -111,13 +111,19 @@ TQ3DrawContextObject MyNewDrawContext(NSView * t_View)
 	myDrawContextData.paneState = kQ3False;
 	myDrawContextData.maskState = kQ3False;
 	myDrawContextData.doubleBufferState = kQ3True;
-    
-    
- 
+
     myCocoaDrawContextData.drawContextData = myDrawContextData;
     myCocoaDrawContextData.nsView = (__bridge void * _Nonnull)(t_View);
     
     myDrawContext = Q3CocoaDrawContext_New(&myCocoaDrawContextData);
+    
+    // Sync to monitor refresh
+    if (myDrawContext != nil)
+    {
+        TQ3Boolean    doSync = kQ3True;
+        Q3Object_SetProperty( myDrawContext, kQ3DrawContextPropertySyncToRefresh,
+            sizeof(doSync), &doSync );
+    }
 
     return myDrawContext ;
 }
