@@ -6,7 +6,7 @@
 int main ()
 {
     DocumentRec m_document; //all QD3D data structures
-    
+
     [NSApplication sharedApplication];
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
     id menubar = [NSMenu new];
@@ -30,11 +30,11 @@ int main ()
     InitDocumentData(&m_document,[window contentView]);
     // draw once
     DocumentDraw3DData(&m_document);
-    
+
     //TODO: setup event chain to react on called TrackerNotification
     [NSApp activateIgnoringOtherApps:YES];
     [NSApp run];
-    
+
     DisposeDocumentData(&m_document);
     ExitQD3D();
     return 0;

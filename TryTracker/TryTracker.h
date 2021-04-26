@@ -4,8 +4,8 @@
 //
 //   4/20/2021      h-haris     de-carbonized, moved to objective-c compiler
 //   4/20/2021      h-haris     move definitions from TryTracker.c here
-//	 5/11/95		dan v		modified for TryTracker
-//	01/01/95		nick		created this file from other stuff
+//   5/11/95        dan v       modified for TryTracker
+//  01/01/95        nick        created this file from other stuff
 
 #ifndef _TryTracker_h_
 #define _TryTracker_h_
