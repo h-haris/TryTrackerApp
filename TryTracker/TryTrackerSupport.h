@@ -5,8 +5,8 @@
 // Modification History:
 //
 //   4/20/2021      h-haris     de-carbonized, moved to objective-c compiler
-//	 5/11/95		dan v		modified for TryTracker
-//	12/27/94		nick		initial version
+//   5/11/95        dan v       modified for TryTracker
+//  12/27/94        nick        initial version
 
 #ifndef _TryTrackerSupport_h_
 #define _TryTrackerSupport_h_
@@ -46,23 +46,23 @@
 
 //---------------------------------------------------------------------------------------
 
-OSErr					MyQD3DInitialize(void);
-OSErr					MyQD3DExit(void);
+OSErr                   MyQD3DInitialize(void);
+OSErr                   MyQD3DExit(void);
 
-TQ3ViewObject			MyNewView(NSView * t_View);
-TQ3DrawContextObject	MyNewDrawContext(NSView * t_View);
-TQ3CameraObject 		MyNewCamera(NSView * t_View);
-TQ3GroupObject			MyNewLights(void);
-TQ3GroupObject 			MyNewModel(void);
+TQ3ViewObject           MyNewView(NSView * t_View);
+TQ3DrawContextObject    MyNewDrawContext(NSView * t_View);
+TQ3CameraObject         MyNewCamera(NSView * t_View);
+TQ3GroupObject          MyNewLights(void);
+TQ3GroupObject          MyNewModel(void);
 
-TQ3GroupObject			InputHelloWorldModel(void);
-TQ3GroupObject			InputFactModel(void);
+TQ3GroupObject          InputHelloWorldModel(void);
+TQ3GroupObject          InputFactModel(void);
 
 TQ3Point3D AdjustCamera(
-	TQ3ViewObject		theView,
-	TQ3GroupObject		mainGroup,
-	short				winWidth,
-	short				winHeight);
+    TQ3ViewObject       theView,
+    TQ3GroupObject      mainGroup,
+    short               winWidth,
+    short               winHeight);
 
 
 #endif
