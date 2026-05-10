@@ -120,6 +120,7 @@ void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
 
     //theDocument->fTracker = Q3Tracker_New(NULL);
     theDocument->fTracker = Q3Tracker_New(TrackerNotification);
+    Q3Tracker_SetActivation(theDocument->fTracker, kQ3True);
 
     ControllerRef = NULL ;
     nextControllerRef = NULL;
@@ -272,8 +273,12 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
     gDocument->fRotationSN  = rotationSN;
     gDocument->fButtons     = buttons;
 
-    //TODO: (either send an event as delegate or call DocumentDraw3DData directly)
-    DocumentDraw3DData(gDocument);
+    // Dispatch rendering to the main thread; tracker notifications arrive on an
+    // XPC background thread and NSOpenGL/Quesa rendering requires the main thread.
+    DocumentPtr doc = gDocument;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DocumentDraw3DData(doc);
+    });
 
     return kQ3Success ;
 };

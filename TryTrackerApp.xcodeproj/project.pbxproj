@@ -318,6 +318,7 @@
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
+				INFOPLIST_FILE = miniApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -343,6 +344,7 @@
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
+				INFOPLIST_FILE = miniApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
