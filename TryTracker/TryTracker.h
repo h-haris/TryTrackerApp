@@ -49,5 +49,6 @@ void InitDocumentData( DocumentPtr theDocument, NSView * t_View );
 TQ3Status DocumentDraw3DData( DocumentPtr theDocument );
 void DisposeDocumentData( DocumentPtr theDocument );
 TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef controllerRef);
+void CenterView(DocumentPtr theDocument);
 
 #endif //_TryTracker_h_

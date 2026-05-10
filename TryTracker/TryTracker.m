@@ -285,6 +285,21 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
 
 //-------------------------------------------------------------------------------------------
 //
+void CenterView(DocumentPtr theDocument)
+{
+    TQ3Point3D    origin = { 0.0f, 0.0f, 0.0f };
+    TQ3Quaternion identity;
+    Q3Quaternion_SetIdentity(&identity);
+
+    Q3Tracker_SetPosition(theDocument->fTracker, NULL, &origin);
+    Q3Tracker_SetOrientation(theDocument->fTracker, NULL, &identity);
+
+    theDocument->fPosition = origin;
+    theDocument->fRotation = identity;
+
+    DocumentDraw3DData(theDocument);
+}
+
 void MainEventLoop()
 {
 #if 0
