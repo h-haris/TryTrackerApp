@@ -315,7 +315,7 @@ static TQ3GroupPosition MyAddTransformedObjectToGroup( TQ3GroupObject theGroup, 
 TQ3GroupObject MyNewModel()
 {
     TQ3GroupObject          myGroup = NULL;
-    TQ3GeometryObject       myBox;
+    TQ3GeometryObject       myBox = NULL;
     TQ3BoxData              myBoxData;
     TQ3ShaderObject         myIlluminationShader;
     TQ3Vector3D             translation;

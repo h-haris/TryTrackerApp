@@ -29,6 +29,7 @@ struct _documentRecord {
     TQ3StyleObject      fBackFacing ;       // whether to draw shapes that face away from the camera
     TQ3StyleObject      fFillStyle ;        // whether drawn as solid filled object or decomposed to components
     TQ3AttributeSet     fHighlight;         // Added when a button is down
+    TQ3StyleObject      fHighlightStyle;    // Highlight style (orange) submitted each frame
     TQ3Point3D          fPosition;          // the position for the center of the model
     TQ3Quaternion       fRotation;          // the rotation about the center of the model
     TQ3Uns32            fButtons;           // buttons state
