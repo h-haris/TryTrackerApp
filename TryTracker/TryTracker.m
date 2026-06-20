@@ -18,8 +18,8 @@
 #include "TryTrackerSupport.h"
 #include "TryTracker.h"
 
-#define dolog
-//#undef dolog
+//#define dolog
+#undef dolog
 
 //-------------------------------------------------------------------------------------------
 // type definitions
@@ -90,6 +90,15 @@ void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
     theDocument->fHighlight = Q3AttributeSet_New();
     myStatus = Q3AttributeSet_Add(theDocument->fHighlight, kQ3AttributeTypeHighlightState, &mySwitch);
 
+    // Highlight style: orange diffuse color so pressed-button boxes are visibly highlighted
+    {
+        TQ3ColorRGB orangeColor = { 1.0f, 0.5f, 0.0f };
+        TQ3AttributeSet hiliteAttSet = Q3AttributeSet_New();
+        Q3AttributeSet_Add(hiliteAttSet, kQ3AttributeTypeDiffuseColor, &orangeColor);
+        theDocument->fHighlightStyle = Q3HighlightStyle_New(hiliteAttSet);
+        Q3Object_Dispose(hiliteAttSet);
+    }
+
     // create the button state boxes
     Q3Point3D_Set(&theDocument->fButtonBoxes[0].origin, -1.6, 0, 0);
     Q3Vector3D_Set(&theDocument->fButtonBoxes[0].orientation, 0, 0.1, 0);
@@ -111,6 +120,7 @@ void InitDocumentData( DocumentPtr theDocument, NSView * t_View )
 
     //theDocument->fTracker = Q3Tracker_New(NULL);
     theDocument->fTracker = Q3Tracker_New(TrackerNotification);
+    Q3Tracker_SetActivation(theDocument->fTracker, kQ3True);
 
     ControllerRef = NULL ;
     nextControllerRef = NULL;
@@ -146,6 +156,7 @@ void DisposeDocumentData( DocumentPtr theDocument)
     Q3Object_Dispose(theDocument->fBackFacing) ;        // whether to draw shapes that face away from the camera
     Q3Object_Dispose(theDocument->fFillStyle) ;         // whether drawn as solid filled object or decomposed to components
     Q3Object_Dispose(theDocument->fHighlight);          // whether drawn highlighted
+    Q3Object_Dispose(theDocument->fHighlightStyle);    // orange highlight style
     Q3Object_Dispose(theDocument->fTracker) ;
 }
 //-----------------------------------------------------------------------------
@@ -161,6 +172,7 @@ TQ3Status DocumentDraw3DData( DocumentPtr theDocument )
         Q3Style_Submit( theDocument->fInterpolation, theDocument->fView );
         Q3Style_Submit( theDocument->fBackFacing, theDocument->fView );
         Q3Style_Submit( theDocument->fFillStyle, theDocument->fView );
+        Q3Style_Submit( theDocument->fHighlightStyle, theDocument->fView );
         for (i = 0; i < 16; i++) {
             mask = 0x0001 << i;
             Q3Push_Submit(theDocument->fView);
@@ -243,6 +255,17 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
     }
 #endif
 
+    // Clamp position to keep model in the visible frustum.
+    // SpaceMouse sends relative deltas that accumulate; without clamping
+    // the model drifts out of the camera frustum (camera at z=7, FOV=1 rad).
+    #define kPosLimit 3.0f
+    if (position.x >  kPosLimit) position.x =  kPosLimit;
+    if (position.x < -kPosLimit) position.x = -kPosLimit;
+    if (position.y >  kPosLimit) position.y =  kPosLimit;
+    if (position.y < -kPosLimit) position.y = -kPosLimit;
+    if (position.z >  kPosLimit) position.z =  kPosLimit;
+    if (position.z < -kPosLimit) position.z = -kPosLimit;
+
     //copy to global:
     gDocument->fPosition    = position;
     gDocument->fPositionSN  = positionSN;
@@ -250,14 +273,33 @@ TQ3Status TrackerNotification(TQ3TrackerObject trackerObject, TQ3ControllerRef c
     gDocument->fRotationSN  = rotationSN;
     gDocument->fButtons     = buttons;
 
-    //TODO: (either send an event as delegate or call DocumentDraw3DData directly)
-    DocumentDraw3DData(gDocument);
+    // Dispatch rendering to the main thread; tracker notifications arrive on an
+    // XPC background thread and NSOpenGL/Quesa rendering requires the main thread.
+    DocumentPtr doc = gDocument;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        DocumentDraw3DData(doc);
+    });
 
     return kQ3Success ;
 };
 
 //-------------------------------------------------------------------------------------------
 //
+void CenterView(DocumentPtr theDocument)
+{
+    TQ3Point3D    origin = { 0.0f, 0.0f, 0.0f };
+    TQ3Quaternion identity;
+    Q3Quaternion_SetIdentity(&identity);
+
+    Q3Tracker_SetPosition(theDocument->fTracker, NULL, &origin);
+    Q3Tracker_SetOrientation(theDocument->fTracker, NULL, &identity);
+
+    theDocument->fPosition = origin;
+    theDocument->fRotation = identity;
+
+    DocumentDraw3DData(theDocument);
+}
+
 void MainEventLoop()
 {
 #if 0
